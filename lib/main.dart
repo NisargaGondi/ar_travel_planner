@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:google_mlkit_object_detection/google_mlkit_object_detection.dart';
 
 void main() {
   runApp(MyApp());
@@ -42,7 +43,11 @@ class _ARScreenState extends State<ARScreen> {
 
   void _initializeObjectDetector() {
     objectDetector = GoogleMlKit.vision.objectDetector(
-      options: ObjectDetectorOptions(classifyObjects: true),
+      options: ObjectDetectorOptions(
+        mode: DetectionMode.single,
+        classifyObjects: true,
+        multipleObjects: true,
+      ),
     );
   }
 
@@ -160,16 +165,17 @@ class _ARScreenState extends State<ARScreen> {
         children: [
           isCameraOpen
               ? FutureBuilder<void>(
-            future: _initializeControllerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return CameraPreview(_cameraController);
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          )
-              : const Center(child: Text("Click the button to open the camera")),
+                  future: _initializeControllerFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return CameraPreview(_cameraController);
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                )
+              : const Center(
+                  child: Text("Click the button to open the camera")),
           Align(
             alignment: Alignment.bottomCenter,
             child: FloatingActionButton(
